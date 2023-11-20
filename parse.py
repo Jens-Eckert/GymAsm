@@ -1,10 +1,10 @@
 """
 Create program, each line will be an address each offset by just 1 for simplicity.
-Basically just line numbers
+Basically just line numbers.
 """
 
 from tokenizer import *
-from evaluate import validInstructionNames, instructionTypes
+from evaluate import instructions
 
 
 class Programifier:
@@ -12,9 +12,11 @@ class Programifier:
         self.tokens = tokens
         self.program = {}
         self.pos = 0
+        self.line = 1
 
     def dewIt(self) -> dict:
-        self.parseLine()
+        while self.pos < len(self.tokens):
+            self.parseLine()
         return self.program
 
     def parseLine(self):
@@ -22,8 +24,8 @@ class Programifier:
         print(token)
         if type(token) is list:
             pass  # Label Register Number Or String
-        elif type(token) is str and token in validInstructionNames.keys():
-            typeo = validInstructionNames[self.tokens[self.pos]]
+        elif type(token) is str and token in instructions.keys():
+            typeo = instructions[self.tokens[self.pos]].type
             print(typeo)
             if typeo == "RType":
                 line = [
@@ -32,10 +34,14 @@ class Programifier:
                     self.tokens[self.pos + 2],
                     self.tokens[self.pos + 3],
                 ]
-                print(line)
+                self.program[self.line] = line
+                self.line += 1
+                self.pos += 4
             elif typeo == "IType":
                 line = [token, self.tokens[self.pos + 1], self.tokens[self.pos + 2]]
-                print(line)
+                self.program[self.line] = line
+                self.line += 1
+                self.pos += 3
             elif typeo == "JType":
                 pass
         else:  # Comment
@@ -44,7 +50,7 @@ class Programifier:
 
 if __name__ == "__main__":
     t = Tokenizer()
-    ts = t.tokenize("addi $bar1, 45")
+    ts = t.tokenize("addi $bar1, 45\nsubi $45, 90")
     print(ts)
     p = Programifier(ts)
     gram = p.dewIt()

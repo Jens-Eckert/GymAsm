@@ -56,14 +56,11 @@ instructions = {
     "add": Operation(
         "RType", lambda r1, r2, env: env.registers[r1] + env.registers[r2]
     ),
-    "addi": Operation("Itype", lambda r1, i, env: env.registers[r1] + i),
-    ""
-}
-
-instructionTypes = {
-    "RType": [Operation, Register, Register, Register],
-    "IType": [Operation, Register, Immediate],
-    "JType": [Operation, Address],
+    "addi": Operation("IType", lambda r1, i, env: env.registers[r1] + i),
+    "sub": Operation(
+        "RType", lambda r1, r2, env: env.registers[r1] - env.registers[r2]
+    ),
+    "subi": Operation("IType", lambda r1, i, env: env.registers[r1] - i),
 }
 
 if __name__ == "__main__":
