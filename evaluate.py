@@ -1,6 +1,11 @@
 from typing import Callable
 
 
+Register = ["Register", str]
+Immediate = int
+Address = int
+
+
 class Environment:
     def __init__(self):
         self.registers = {
@@ -38,28 +43,28 @@ class Environment:
         pass
 
 
-add: Callable[[str, str, Environment], int] = (
-    lambda r1, r2, env: env.registers[r1] + env.registers[r2]
-)
-addi: Callable[[str, int, Environment], int] = lambda r1, i, env: env.registers[r1] + i
+class Operation:
+    def __init__(self, type: str, func: Callable):
+        self.func = func
+        self.type = type
 
-sub: Callable[[str, str, Environment], int] = (
-    lambda r1, r2, env: env.registers[r1] - env.registers[r2]
-)
-subi: Callable[[str, int, Environment], int] = lambda r1, i, env: env.registers[r1] - i
-
-mult: Callable[[str, str, Environment], int] = (
-    lambda r1, r2, env: env.registers[r1] * env.registers[r2]
-)
-multi: Callable[[str, int, Environment], int] = lambda r1, i, env: env.registers[r1] * i
-
-div: Callable[[str, str, Environment], int] = (
-    lambda r1, r2, env: env.registers[r1] // env.registers[r2]
-)
-divi: Callable[[str, int, Environment], int] = lambda r1, i, env: env.registers[r1] // i
+    def __call__(self, *args):
+        pass
 
 
-instructions = [add, addi, sub, subi]
+instructions = {
+    "add": Operation(
+        "RType", lambda r1, r2, env: env.registers[r1] + env.registers[r2]
+    ),
+    "addi": Operation("Itype", lambda r1, i, env: env.registers[r1] + i),
+    ""
+}
+
+instructionTypes = {
+    "RType": [Operation, Register, Register, Register],
+    "IType": [Operation, Register, Immediate],
+    "JType": [Operation, Address],
+}
 
 if __name__ == "__main__":
     env = Environment()

@@ -38,7 +38,7 @@ class Tokenizer:
             assert match
             pos = match.end()
 
-            if token == Whitespace:
+            if token == Whitespace or token == "Separator":
                 continue
 
             assert (
@@ -58,10 +58,6 @@ class Tokenizer:
                 tokens.append([token, match.group(0)])
                 continue
 
-            if token == "Separator":
-                tokens.append(match.group(0).removesuffix(" "))
-                continue
-
             tokens.append(match.group(0))
         return tokens
 
@@ -74,9 +70,9 @@ class Tokenizer:
 
 def testSimple():
     t = Tokenizer()
-    tokens = t.tokenize("addi $bar1, 45\nsubi $bar1, 90")
+    tokens = t.tokenize("main:\n\taddi $bar1, 45\nsubi $bar1, 90")
     print(tokens)
-    # assert t.tokenize("")
+    print(t.tokenize("# This comment is cool\nsub $bar1, 90"))
 
 
 if __name__ == "__main__":

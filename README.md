@@ -1,5 +1,5 @@
 # GymAsm
-8-bit assembly simulator in python.
+8-bit assembly simulator in C++.
 
 File extension .gasm
 
