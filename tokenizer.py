@@ -3,6 +3,7 @@ Creates list version of gasm program.
 """
 
 import re
+from sys import argv
 
 Whitespace = None
 
@@ -12,7 +13,7 @@ patterns = [
     [r"[a-zA-Z]+\:", "Label"],
     [r"[a-zA-Z]+", "Operator"],  # Operator or operand that is a label
     [r"\,\s", "Separator"],
-    [r"\.[a-z]+|\ \d+", "Modifer"],
+    [r"\.[a-z]+|\ \d+", "Section"],
     [r"\"([^\"]|\"\")*\"", "String"],
     [r"\d+(\.\d*)?", "Number"],
     [r"\$[a-z0-9]{1,6}", "Register"],
@@ -20,60 +21,59 @@ patterns = [
 ]
 
 
-class Tokenizer:
-    def tokenize(self, characters: str) -> list:
-        print('Tokenizing "' + characters + '"')
+def tokenize(characters: str) -> list:
+    # print('Tokenizing "' + characters + '"')
 
-        tokens = []
-        pos = 0
+    tokens = []
+    pos = 0
 
-        while pos < len(characters):
-            for regex, token in patterns:
-                pattern = re.compile(regex)
-                match = pattern.match(characters, pos)
+    while pos < len(characters):
+        for regex, token in patterns:
+            pattern = re.compile(regex)
+            match = pattern.match(characters, pos)
 
-                if match:
-                    break
+            if match:
+                break
 
-            assert match
-            pos = match.end()
+        assert match
+        pos = match.end()
 
-            if token == Whitespace or token == "Separator":
-                continue
+        if token == Whitespace or token == "Separator":
+            continue
 
-            assert (
-                token != "Error"
-            ), "Syntax Error: illegal character at " + match.group(0)
+        assert token != "Error", "Syntax Error: illegal character at " + match.group(0)
 
-            if token == "Number":
-                tokens.append([token, self.number(match.group(0))])
-                continue
-
-            if (
-                token == "String"
-                or token == "Label"
-                or token == "Modifier"
-                or token == "Register"
-            ):
-                tokens.append([token, match.group(0)])
-                continue
-
-            tokens.append(match.group(0))
-        return tokens
-
-    def number(self, s: str):
-        if "." in s:
-            return float(s)
-        else:
-            return int(s)
+        tokens.append(match.group(0))
+    return tokens
 
 
-def testSimple():
-    t = Tokenizer()
-    tokens = t.tokenize("main:\n\taddi $bar1, 45\nsubi $bar1, 90")
-    print(tokens)
-    print(t.tokenize("# This comment is cool\nsub $bar1, 90"))
+def number(s: str):
+    if "." in s:
+        return float(s)
+    else:
+        return int(s)
 
 
 if __name__ == "__main__":
-    testSimple()
+    if len(argv) != 2:
+        print("Please supply a .gasm input file.")
+        print("USAGE: python3 tokenizer.py <FILE>.gasm")
+        exit(69)
+
+    if not argv[1].endswith(".gasm"):
+        print("Not a .gasm file")
+        exit(69)
+
+    lines = ""
+
+    with open(argv[1]) as f:
+        lines = "".join(f.readlines())
+
+    print(lines)
+
+    tokens = tokenize(lines)
+
+    intFileName = argv[1].removesuffix(".gasm") + ".gimp"
+
+    with open(intFileName, "w") as f:
+        f.write(tokens.__str__())

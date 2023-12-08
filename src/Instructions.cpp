@@ -1,4 +1,4 @@
-#include "Instructions.hpp"
+#include "instructions.hpp"
 
 void add(Register* r1, Register* r2, Register* r3) {
     r1->value = r2->value + r3->value;

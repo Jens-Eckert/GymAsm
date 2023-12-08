@@ -1,16 +1,20 @@
 #ifndef ENV_HPP
 #define ENV_HPP
 
+#include <fstream>
 #include <functional>
+#include <iostream>
 #include <typeinfo>
 #include <unordered_map>
 
-#include "Instructions.hpp"
-#include "Register.hpp"
+#include "instructions.hpp"
+#include "register.hpp"
 
 class Environment {
 public:
     Environment();
+
+    void loadProgram(std::string);
 
 private:
     std::unordered_map<std::string, Register> registers;

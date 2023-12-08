@@ -1,11 +1,13 @@
 CPP = clang++
 CPP_FLAGS = -std=c++17
+DEBUG_FLAGS = -std=c++17 -g3 -O0
 INCLUDE_OPT = -I ./headers/
 
-main: ./src/main.cpp ./headers/Environment.hpp ./headers/Register.hpp ./headers/Instructions.hpp
-	${CPP} ${CPP_FLAGS} ${INCLUDE_OPT} ./src/main.cpp ./src/Environment.cpp ./src/Register.cpp ./src/Instructions.cpp -o main
+main: ./src/main.cpp ./headers/environment.hpp ./headers/register.hpp ./headers/instructions.hpp
+	${CPP} ${CPP_FLAGS} ${INCLUDE_OPT} ./src/main.cpp ./src/environment.cpp ./src/register.cpp ./src/instructions.cpp -o main.o
+	./main.o test.gasm
+	# rm main.o
 
-clean:
-	rm *.out
-	rm *.o
-	rm main
+debug: ./src/main.cpp ./headers/environment.hpp ./headers/register.hpp ./headers/instructions.hpp
+	${CPP} ${DEBUG_FLAGS} ${INCLUDE_OPT} ./src/main.cpp ./src/environment.cpp ./src/register.cpp ./src/instructions.cpp -o main.o
+	gdb -q main.o

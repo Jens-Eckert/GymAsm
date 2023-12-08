@@ -1,7 +1,7 @@
 #ifndef INSTRUCTIONS_HPP
 #define INSTRUCTIONS_HPP
 
-#include "Register.hpp"
+#include "register.hpp"
 
 const std::string InstructionNames[] = {"add", "addi", "sub", "subi",
                                         "mult", "multi", "div", "divi"};

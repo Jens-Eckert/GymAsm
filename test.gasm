@@ -1,0 +1,9 @@
+.sets
+
+addr: 69
+
+.reps
+
+main:
+    add $45, $45, 1
+    
